@@ -10,7 +10,60 @@ export default function CodingTest() {
   const [code, setCode] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState("");
+  const [aiHint, setAiHint] = useState("");
+  const [listeningAssist, setListeningAssist] = useState(false);
   const question = "Write logic to reverse a string.";
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  const startAskListening = () => {
+    if (!SpeechRecognition) {
+      showToast("Speech recognition is not supported in this browser.", "warning");
+      return;
+    }
+
+    setListeningAssist(true);
+    setQuery("");
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.continuous = false;
+    recognition.interimResults = true;
+
+    recognition.onresult = (event) => {
+      let transcript = "";
+      for (let i = 0; i < event.results.length; i += 1) {
+        transcript += event.results[i][0].transcript + " ";
+      }
+      setQuery(transcript.trim());
+    };
+
+    recognition.onerror = () => {
+      setListeningAssist(false);
+      showToast("Voice query failed. Please try again.", "error");
+    };
+
+    recognition.onend = () => {
+      setListeningAssist(false);
+    };
+
+    recognition.start();
+  };
+
+  const handleAskAI = () => {
+    if (!query.trim()) {
+      showToast("Please enter a query or use voice input.", "warning");
+      return;
+    }
+
+    const hint = query.toLowerCase().includes("reverse")
+      ? "Try using a loop or built-in reverse functions, and make sure to handle empty strings and null values."
+      : "Try clarifying which part of the code you need help with, such as logic flow, edge cases, or syntax.";
+
+    setAiHint(hint);
+    showToast("AI hint generated.", "success");
+  };
 
   const runMockCheck = async () => {
     if (!code.trim()) {
@@ -86,6 +139,37 @@ export default function CodingTest() {
             value={code}
             onChange={(e) => setCode(e.target.value)}
           />
+
+          <div className="ask-ai-card">
+            <div className="ask-ai-header">
+              <h3>Ask AI</h3>
+              <p>Ask for help or a hint about your code query. Type your question or use voice input.</p>
+            </div>
+            <div className="ask-ai-row">
+              <input
+                className="ask-ai-input"
+                type="text"
+                placeholder="What part of this code do you need help with?"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <button className="btn btn-outline" onClick={startAskListening}>
+                {listeningAssist ? "Listening..." : "🎙️ Voice Query"}
+              </button>
+            </div>
+            <div className="ask-ai-actions">
+              <button className="btn" onClick={handleAskAI}>
+                Ask AI
+              </button>
+            </div>
+            {aiHint && (
+              <div className="ask-ai-response">
+                <strong>AI Hint:</strong>
+                <p>{aiHint}</p>
+              </div>
+            )}
+          </div>
+
           <button className="btn" onClick={runMockCheck} disabled={loading}>
             {loading ? "Checking..." : "Check Answer"}
           </button>

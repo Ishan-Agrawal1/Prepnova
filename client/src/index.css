@@ -388,6 +388,8 @@ body::before {
   height: 100vh;
   z-index: 1000;
   overflow-y: auto;
+  scrollbar-color: rgba(125, 211, 252, 0.35) rgba(255, 255, 255, 0.04);
+  scrollbar-width: thin;
   background: rgba(4, 7, 18, 0.94);
   backdrop-filter: blur(22px);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
@@ -409,15 +411,31 @@ body::before {
 }
 
 .sidebar .logo-img {
-  width: 84px;
+  max-height: 56px;
+  width: auto;
   height: auto;
   flex-shrink: 0;
+  filter: brightness(1.45) saturate(1.9) contrast(1.15) drop-shadow(0 0 12px rgba(56, 189, 248, 0.45));
 }
 
 .sidebar .logo-text {
   font-size: 20px;
   font-weight: 800;
-  color: #7dd3fc;
+  color: #c7eafa;
+  text-shadow: 0 0 12px rgba(135, 224, 255, 0.35);
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(125, 211, 252, 0.35);
+  border-radius: 999px;
 }
 
 .nav-links {
@@ -704,6 +722,63 @@ body::before {
   min-height: 200px;
   font-family: ui-monospace, 'Cascadia Code', monospace;
   resize: vertical;
+}
+
+.ask-ai-card {
+  margin: 28px 0 18px;
+  padding: 22px;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+}
+
+.ask-ai-header h3 {
+  margin-bottom: 8px;
+  color: #e2e8f0;
+}
+
+.ask-ai-header p {
+  margin: 0;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.ask-ai-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.ask-ai-input {
+  flex: 1;
+  min-width: 220px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(8, 18, 34, 0.96);
+  color: #e2e8f0;
+}
+
+.ask-ai-input::placeholder {
+  color: rgba(226, 232, 240, 0.5);
+}
+
+.ask-ai-actions {
+  margin-top: 16px;
+}
+
+.ask-ai-response {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.12);
+  border: 1px dashed rgba(56, 189, 248, 0.32);
+  color: #cbd5e1;
+}
+
+.ask-ai-response p {
+  margin: 10px 0 0;
 }
 
 .field-error {
