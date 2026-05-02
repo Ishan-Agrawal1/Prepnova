@@ -342,8 +342,8 @@ html, body, #root {
 }
 
 .sidebar .logo-img {
-  height: 36px;
-  width: auto;
+  height: auto;
+  width: 60%;
   flex-shrink: 0;
 }
 
@@ -398,6 +398,8 @@ html, body, #root {
   background: linear-gradient(135deg, rgba(0, 245, 255, 0.22), rgba(139, 92, 246, 0.22));
   color: #ffffff;
   border: 1px solid rgba(0, 245, 255, 0.25);
+  width: 100%;
+
 }
 
 .page-container,
