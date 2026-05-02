@@ -21,11 +21,7 @@ export default function Interview() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [feedback, setFeedback] = useState("");
-<<<<<<< HEAD
   const [isSaving, setIsSaving] = useState(false);
-=======
-  const [loading, setLoading] = useState(false);
->>>>>>> 9f619a412038459971cf9b489e8414a28ae5d337
 
   const handleChange = (value) => {
     const updated = [...answers];
@@ -33,16 +29,7 @@ export default function Interview() {
     setAnswers(updated);
   };
 
-<<<<<<< HEAD
   const saveInterview = async () => {
-    const studentUser = JSON.parse(localStorage.getItem("studentUser"));
-    const generatedFeedback =
-      "Good start. Your answers should be more structured, confident, and specific. Try adding real project examples, measurable achievements, and clearer introductions.";
-
-    setIsSaving(true);
-
-=======
-  const handleSubmit = async () => {
     const emptyCount = answers.filter((a) => !a.trim()).length;
     if (emptyCount === questions.length) {
       showToast("Please answer at least one question before submitting.", "warning");
@@ -52,8 +39,8 @@ export default function Interview() {
     const generatedFeedback =
       "Good start. Your answers should be more structured, confident, and specific. Try adding real project examples, measurable achievements, and clearer introductions.";
 
-    setLoading(true);
->>>>>>> 9f619a412038459971cf9b489e8414a28ae5d337
+    setIsSaving(true);
+
     try {
       await axios.post("http://localhost:3001/api/interviews", {
         userEmail: user?.email || "guest@example.com",
@@ -66,24 +53,18 @@ export default function Interview() {
       setSubmitted(true);
       showToast("Interview result saved successfully!", "success");
     } catch (error) {
-<<<<<<< HEAD
-      alert(error.response?.data?.error || "Failed to save interview result");
-    } finally {
-      setIsSaving(false);
-=======
       showToast(
         error.response?.data?.message || error.response?.data?.error || "Failed to save interview result. Please try again.",
         "error"
       );
     } finally {
-      setLoading(false);
->>>>>>> 9f619a412038459971cf9b489e8414a28ae5d337
+      setIsSaving(false);
     }
   };
 
   const handleSubmitQuestion = async () => {
     if (!answers[currentQuestion]?.trim()) {
-      alert("Please enter an answer before moving on.");
+      showToast("Please enter an answer before moving on.", "warning");
       return;
     }
 
@@ -146,10 +127,9 @@ export default function Interview() {
             />
           </div>
 
-<<<<<<< HEAD
           <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
             <button className="btn" onClick={handleSubmitQuestion} disabled={isSaving}>
-              {currentQuestion < questions.length - 1 ? "Submit Answer" : "Finish Interview"}
+              {isSaving ? "Submitting..." : (currentQuestion < questions.length - 1 ? "Submit Answer" : "Finish Interview")}
             </button>
             <button
               className="btn btn-outline"
@@ -163,11 +143,6 @@ export default function Interview() {
           <div style={{ marginTop: "18px", color: "#6b7d91" }}>
             {answers.filter((answer) => answer.trim()).length} / {questions.length} answered
           </div>
-=======
-          <button className="btn" onClick={handleSubmit} disabled={loading}>
-            {loading ? "Submitting..." : "Submit Interview"}
-          </button>
->>>>>>> 9f619a412038459971cf9b489e8414a28ae5d337
         </div>
 
         {submitted && (

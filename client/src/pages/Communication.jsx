@@ -1,10 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Navbar from "../components/navbar";
-<<<<<<< HEAD
 import { motion } from "framer-motion";
-=======
 import { showToast } from "../components/Toast";
->>>>>>> 9f619a412038459971cf9b489e8414a28ae5d337
 
 const communicationQuestions = [
   "Tell me about a technical challenge you solved.",

@@ -16,11 +16,8 @@
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "axios": "^1.15.0",
-<<<<<<< HEAD
-    "framer-motion": "^12.38.0",
-=======
     "better-auth": "^1.6.9",
->>>>>>> 9f619a412038459971cf9b489e8414a28ae5d337
+    "framer-motion": "^12.38.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router-dom": "^6.30.3",
