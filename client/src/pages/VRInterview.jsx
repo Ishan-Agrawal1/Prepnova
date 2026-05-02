@@ -5,8 +5,9 @@ import { shuffleArray } from "../lib/questionUtils";
 import * as BABYLON from "@babylonjs/core";
 import "@babylonjs/loaders";
 import { motion } from "framer-motion";
+import avatarImage from "../assets/images/image.png";
 
-const AVATAR_IMAGE_URL = "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=512&q=80";
+const AVATAR_IMAGE_URL = avatarImage;
 
 const interviewQuestions = [
   "Tell me about your background and experience.",
@@ -58,13 +59,13 @@ const createInterviewRoom = (scene) => {
   return { floor, backWall, leftWall, rightWall, ceiling };
 };
 
-const createInterviewerAvatar = (scene) => {
+const createInterviewerAvatar = (scene, imageUrl = AVATAR_IMAGE_URL) => {
   const avatarPlane = BABYLON.MeshBuilder.CreatePlane("avatarPlane", { width: 1.4, height: 1.8 }, scene);
   avatarPlane.position = new BABYLON.Vector3(0, 1.05, 2);
 
   const avatarMat = new BABYLON.StandardMaterial("avatarPlaneMat", scene);
   avatarMat.diffuseTexture = new BABYLON.Texture(
-    AVATAR_IMAGE_URL,
+    imageUrl,
     scene,
     false,
     true,
@@ -108,6 +109,7 @@ export default function VRInterview() {
   const videoRef = useRef(null);
   const canvasVideoRef = useRef(null);
   const detectionIntervalRef = useRef(null);
+  const uploadedAvatarUrlRef = useRef(null);
 
   const [vrSupported, setVrSupported] = useState(false);
   const [randomQuestions, setRandomQuestions] = useState(() => shuffleArray(interviewQuestions));
@@ -117,6 +119,94 @@ export default function VRInterview() {
   const [eyeContact, setEyeContact] = useState(0); // 0-100%
   const [cameraActive, setCameraActive] = useState(false);
   const [sessionStarted, setSessionStarted] = useState(false);
+  const [avatarImageSrc, setAvatarImageSrc] = useState(avatarImage);
+  const [aiQuery, setAiQuery] = useState("");
+  const [aiResponse, setAiResponse] = useState("");
+  const [listeningAi, setListeningAi] = useState(false);
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  const startAiListening = () => {
+    if (!SpeechRecognition) {
+      showToast("Speech recognition is not supported in this browser.", "warning");
+      return;
+    }
+
+    setListeningAi(true);
+    setAiQuery("");
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.continuous = false;
+    recognition.interimResults = true;
+
+    recognition.onresult = (event) => {
+      let transcript = "";
+      for (let i = 0; i < event.results.length; i += 1) {
+        transcript += event.results[i][0].transcript + " ";
+      }
+      setAiQuery(transcript.trim());
+    };
+
+    recognition.onerror = () => {
+      setListeningAi(false);
+      showToast("Voice query failed. Please try again.", "error");
+    };
+
+    recognition.onend = () => {
+      setListeningAi(false);
+    };
+
+    recognition.start();
+  };
+
+  const handleAskAI = () => {
+    if (!aiQuery.trim()) {
+      showToast("Please enter a query or use voice input.", "warning");
+      return;
+    }
+
+    const queryLower = aiQuery.toLowerCase();
+    let response = "";
+
+    if (queryLower.includes("interview") || queryLower.includes("answer")) {
+      response = "For interview questions, focus on the STAR method (Situation, Task, Action, Result). Tell a real story, quantify your impact, and connect it to the role. Practice clear articulation and confidence.";
+    } else if (queryLower.includes("communication")) {
+      response = "Effective communication means listening actively, speaking clearly, and explaining complex ideas simply. Use examples and avoid technical jargon when needed. Always seek feedback and adapt your style.";
+    } else if (queryLower.includes("confidence")) {
+      response = "Build confidence through practice. Record yourself, identify gaps, and practice answering common questions. Remember: employers want to see YOU succeed. Be authentic and prepared.";
+    } else if (queryLower.includes("feedback") || queryLower.includes("improve")) {
+      response = "Track what works and what doesn't. After each practice, note: clarity, pacing, structure, and confidence level. Focus on one improvement per session to build momentum.";
+    } else if (queryLower.includes("eye contact") || queryLower.includes("body")) {
+      response = "Maintain eye contact to show confidence. Sit upright, avoid fidgeting, and speak at a moderate pace. Your body language shows engagement and professionalism.";
+    } else {
+      response = "I can help you with interview prep, communication tips, confidence building, and feedback. Ask me about STAR method, communication strategies, body language, or how to improve your answers.";
+    }
+
+    setAiResponse(response);
+    showToast("PrepNova AI response ready.", "success");
+  };
+
+  const handleAvatarUpload = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (uploadedAvatarUrlRef.current) {
+      URL.revokeObjectURL(uploadedAvatarUrlRef.current);
+    }
+    const fileUrl = URL.createObjectURL(file);
+    uploadedAvatarUrlRef.current = fileUrl;
+    setAvatarImageSrc(fileUrl);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (uploadedAvatarUrlRef.current) {
+        URL.revokeObjectURL(uploadedAvatarUrlRef.current);
+        uploadedAvatarUrlRef.current = null;
+      }
+    };
+  }, []);
 
   // Initialize Babylon.js scene
   useEffect(() => {
@@ -134,7 +224,7 @@ export default function VRInterview() {
 
     // Create scene
     createInterviewRoom(scene);
-    const { avatar } = createInterviewerAvatar(scene);
+    const { avatar } = createInterviewerAvatar(scene, avatarImageSrc);
 
     engineRef.current = engine;
     sceneRef.current = scene;
@@ -167,7 +257,7 @@ export default function VRInterview() {
       window.removeEventListener("resize", handleResize);
       engine.dispose();
     };
-  }, [sessionStarted]);
+  }, [sessionStarted, avatarImageSrc]);
 
   // Speak question
   const speakQuestion = useCallback(() => {
@@ -344,6 +434,17 @@ export default function VRInterview() {
             <div className="label-pill">Immersive VR</div>
             <h1 className="section-title">VR Interview Experience</h1>
             <p className="section-subtitle">Experience a fully immersive virtual interview with an AI interviewer.</p>
+            <div className="hero-upload">
+              <label className="upload-label">
+                Upload avatar image
+                <input type="file" accept="image/*" onChange={handleAvatarUpload} />
+              </label>
+              {avatarImageSrc && (
+                <div className="avatar-preview">
+                  <img src={avatarImageSrc} alt="Uploaded avatar preview" />
+                </div>
+              )}
+            </div>
             <div className="hero-actions">
               <button className="btn" onClick={() => {
                 setRandomQuestions(shuffleArray(interviewQuestions));
@@ -398,6 +499,36 @@ export default function VRInterview() {
             <div className="vr-question-display">
               <h3>Current Question:</h3>
               <p>{randomQuestions[currentQuestion]}</p>
+            </div>
+
+            <div className="ask-ai-card" style={{ marginTop: "24px" }}>
+              <div className="ask-ai-header">
+                <h3>📚 PrepNova AI Coach</h3>
+                <p>Ask for interview tips, communication advice, or feedback on your performance. Type or speak your question.</p>
+              </div>
+              <div className="ask-ai-row">
+                <input
+                  className="ask-ai-input"
+                  type="text"
+                  placeholder="Ask about interview techniques, communication, confidence, or feedback..."
+                  value={aiQuery}
+                  onChange={(e) => setAiQuery(e.target.value)}
+                />
+                <button className="btn btn-outline" onClick={startAiListening}>
+                  {listeningAi ? "Listening..." : "🎙️ Voice"}
+                </button>
+              </div>
+              <div className="ask-ai-actions">
+                <button className="btn" onClick={handleAskAI}>
+                  Ask AI
+                </button>
+              </div>
+              {aiResponse && (
+                <div className="ask-ai-response">
+                  <strong>PrepNova Response:</strong>
+                  <p>{aiResponse}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
