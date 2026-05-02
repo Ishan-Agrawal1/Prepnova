@@ -24,14 +24,14 @@ export default function Navbar() {
   };
 
   return (
-    <motion.aside 
+    <motion.aside
       className="sidebar"
       initial={{ x: -270 }}
       animate={{ x: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
       <div className="sidebar-inner">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.8 }}
@@ -42,7 +42,7 @@ export default function Navbar() {
           </Link>
         </motion.div>
 
-        <motion.nav 
+        <motion.nav
           className="nav-links"
           initial="hidden"
           animate="visible"
