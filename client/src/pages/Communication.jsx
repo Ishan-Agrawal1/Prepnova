@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import Navbar from "../components/navbar";
+<<<<<<< HEAD
 import { motion } from "framer-motion";
+=======
+import { showToast } from "../components/Toast";
+>>>>>>> 9f619a412038459971cf9b489e8414a28ae5d337
 
 const communicationQuestions = [
   "Tell me about a technical challenge you solved.",
@@ -407,7 +411,7 @@ export default function Communication() {
 
   const speakQuestion = () => {
     if (!("speechSynthesis" in window)) {
-      alert("Text-to-speech is not supported in this browser.");
+      showToast("Text-to-speech is not supported in this browser.", "warning");
       return;
     }
 
@@ -420,7 +424,7 @@ export default function Communication() {
 
   const startListening = () => {
     if (!SpeechRecognition) {
-      alert("Speech recognition is not supported in this browser.");
+      showToast("Speech recognition is not supported in this browser.", "warning");
       return;
     }
 
@@ -442,7 +446,7 @@ export default function Communication() {
 
     recognition.onerror = () => {
       setListening(false);
-      alert("Speech recognition error. Please try again.");
+      showToast("Speech recognition error. Please try again.", "error");
     };
 
     recognition.onend = () => {
@@ -454,7 +458,7 @@ export default function Communication() {
 
   const saveAnswer = () => {
     if (!currentText.trim() && !currentTranscript.trim()) {
-      alert("Please type or speak your answer first.");
+      showToast("Please type or speak your answer first.", "warning");
       return;
     }
     const answerText = currentText.trim() || currentTranscript.trim();
@@ -576,7 +580,7 @@ export default function Communication() {
 
   const startCamera = async () => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      alert("Camera access is not supported in this browser.");
+      showToast("Camera access is not supported in this browser.", "warning");
       return;
     }
 
@@ -592,7 +596,7 @@ export default function Communication() {
       setCameraWarning("Center your face in the frame for practice readiness.");
       detectFaceLoop();
     } catch {
-      alert("Unable to access your camera. Please allow camera permission.");
+      showToast("Unable to access your camera. Please allow camera permission.", "error");
     }
   };
 
