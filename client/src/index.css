@@ -179,6 +179,7 @@ body::before {
   max-width: 1200px;
   margin: auto;
   padding: 60px 20px;
+  margin-top: 0;
 }
 
 .section-title {
@@ -411,8 +412,9 @@ body::before {
 }
 
 .sidebar .logo-img {
-  max-height: 56px;
-  width: auto;
+  margin-right: 20%;
+  max-height: auto;
+  width: 70%;
   height: auto;
   flex-shrink: 0;
   filter: brightness(1.45) saturate(1.9) contrast(1.15) drop-shadow(0 0 12px rgba(56, 189, 248, 0.45));
