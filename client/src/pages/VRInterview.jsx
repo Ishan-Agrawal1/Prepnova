@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import Navbar from "../components/navbar";
 import * as BABYLON from "@babylonjs/core";
 import "@babylonjs/loaders";
+import { motion } from "framer-motion";
 
 const interviewQuestions = [
   "Tell me about your background and experience.",
@@ -395,15 +396,26 @@ export default function VRInterview() {
     <div className="page-container tech-page vr-interview-page">
       <Navbar />
       {!sessionStarted ? (
-        <div className="vr-intro">
-          <h1>VR Interview Experience</h1>
-          <p>Experience a fully immersive virtual interview with an AI interviewer.</p>
-          <button className="start-vr-btn" onClick={() => setSessionStarted(true)}>
-            Start Interview
-          </button>
-        </div>
+        <motion.section 
+          className="section page-hero"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="hero-content">
+            <div className="label-pill">Immersive VR</div>
+            <h1 className="section-title">VR Interview Experience</h1>
+            <p className="section-subtitle">Experience a fully immersive virtual interview with an AI interviewer.</p>
+            <div className="hero-actions">
+              <button className="btn" onClick={() => setSessionStarted(true)}>
+                Start Interview
+              </button>
+            </div>
+          </div>
+        </motion.section>
       ) : (
-        <div className="vr-container">
+        <motion.section className="section" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
+        <div className="vr-container card enhanced-card" style={{ padding: "20px" }}>
           <div className="vr-media-grid">
             <canvas ref={canvasRef} className="vr-scene-canvas" />
             <div className="vr-preview-card">
@@ -447,6 +459,7 @@ export default function VRInterview() {
             </div>
           </div>
         </div>
+        </motion.section>
       )}
     </div>
   );

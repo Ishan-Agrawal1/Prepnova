@@ -13,12 +13,7 @@ html, body, #root {
   min-height: 100%;
   font-family: 'Manrope', sans-serif;
   overflow-x: hidden;
-
-  background:
-    radial-gradient(circle at top left, rgba(0, 245, 255, 0.12), transparent 30%),
-    radial-gradient(circle at top right, rgba(139, 92, 246, 0.18), transparent 35%),
-    linear-gradient(135deg, #050510, #0b1026, #18072f);
-
+  background: transparent;
   color: #ffffff;
 }
 

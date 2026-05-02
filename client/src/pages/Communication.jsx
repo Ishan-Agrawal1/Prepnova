@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Navbar from "../components/navbar";
+import { motion } from "framer-motion";
 
 const communicationQuestions = [
   "Tell me about a technical challenge you solved.",
@@ -666,14 +667,23 @@ export default function Communication() {
   };
 
   return (
-    <div className="communication-page">
+    <div className="page-container tech-page communication-page">
       <Navbar />
-      <div className="communication-header">
-        <h1>Interview Practice</h1>
-        <p>Choose a mode, select a company and domain, then practice using real-style questions and comparison feedback.</p>
-      </div>
+      <motion.section 
+        className="section page-hero"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="hero-content">
+          <div className="label-pill">Practice & Prepare</div>
+          <h1 className="section-title">Interview Practice</h1>
+          <p className="section-subtitle">Choose a mode, select a company and domain, then practice using real-style questions and comparison feedback.</p>
+        </div>
+      </motion.section>
 
-      <div className="practice-mode-card">
+      <motion.section className="section" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.6 }}>
+      <div className="practice-mode-card card enhanced-card">
         <div className="mode-buttons">
           <button
             className={practiceMode === "Communication" ? "active" : ""}
@@ -739,14 +749,15 @@ export default function Communication() {
           <p><strong>Questions:</strong> {activeQuestions.length}</p>
         </div>
 
-        <button className="start-button" onClick={startSession}>
+        <button className="btn" style={{ marginTop: "20px" }} onClick={startSession}>
           {sessionStarted ? "Restart Practice" : "Start Practice"}
         </button>
       </div>
+      </motion.section>
 
       {sessionStarted && (
-        <div className="practice-panel">
-          <div className="question-card">
+        <motion.section className="section practice-panel" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <div className="question-card card enhanced-card">
             <h2>Question {currentQuestion + 1}</h2>
             <p>{activeQuestions[currentQuestion]}</p>
 
@@ -789,25 +800,25 @@ export default function Communication() {
               <canvas ref={canvasRef} style={{ display: cameraActive ? "block" : "none" }} />
             </div>
 
-            <div className="progress-card">
+            <div className="progress-card card enhanced-card" style={{ marginTop: "20px" }}>
               <h3>Saved Answers</h3>
               <ul>
                 {activeAnswers.map((answer, index) => (
-                  <li key={index} className={answer ? "filled" : "empty"} onClick={() => goToQuestion(index)}>
+                  <li key={index} className={answer ? "filled" : "empty"} onClick={() => goToQuestion(index)} style={{ cursor: "pointer", padding: "8px", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
                     Q{index + 1}: {answer ? "Saved" : "Not answered"}
                   </li>
                 ))}
               </ul>
             </div>
           </div>
-        </div>
+        </motion.section>
       )}
 
       {sessionStarted && (
-        <div className="feedback-panel">
-          <button onClick={generateFeedback} className="feedback-action">Submit for Feedback</button>
+        <motion.section className="section feedback-panel" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
+          <button onClick={generateFeedback} className="btn btn-outline" style={{ width: "100%", marginBottom: "20px" }}>Submit for Feedback</button>
           {submitted && (
-            <div className="feedback-results">
+            <div className="feedback-results card enhanced-card">
               <h3>Practice Feedback</h3>
               <p>{feedback}</p>
               <div className="feedback-list">
@@ -824,18 +835,20 @@ export default function Communication() {
               </div>
             </div>
           )}
-        </div>
+        </motion.section>
       )}
 
       {reviewComparison && (
-        <div className="comparison-panel">
-          <h3>Current Answer Comparison</h3>
+        <motion.section className="section comparison-panel" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+          <div className="card enhanced-card">
+          <h3 style={{ color: "#1b5d93" }}>Current Answer Comparison</h3>
           <p><strong>Question:</strong> {reviewComparison.question}</p>
           <p><strong>Your answer:</strong> {reviewComparison.answer}</p>
           <p><strong>Model answer:</strong> {reviewComparison.model}</p>
           <p><strong>Score:</strong> {reviewComparison.score}/100</p>
           <p><strong>Suggestions:</strong> {reviewComparison.improvements.join(" ") || "Great answer!"}</p>
-        </div>
+          </div>
+        </motion.section>
       )}
     </div>
   );

@@ -14,19 +14,23 @@ export default function Interview() {
 
   const navigate = useNavigate();
   const [answers, setAnswers] = useState(Array(questions.length).fill(""));
+  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [feedback, setFeedback] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleChange = (index, value) => {
+  const handleChange = (value) => {
     const updated = [...answers];
-    updated[index] = value;
+    updated[currentQuestion] = value;
     setAnswers(updated);
   };
 
-  const handleSubmit = async () => {
+  const saveInterview = async () => {
     const studentUser = JSON.parse(localStorage.getItem("studentUser"));
     const generatedFeedback =
       "Good start. Your answers should be more structured, confident, and specific. Try adding real project examples, measurable achievements, and clearer introductions.";
+
+    setIsSaving(true);
 
     try {
       await axios.post("http://localhost:3001/api/interviews", {
@@ -40,7 +44,23 @@ export default function Interview() {
       setSubmitted(true);
     } catch (error) {
       alert(error.response?.data?.error || "Failed to save interview result");
+    } finally {
+      setIsSaving(false);
     }
+  };
+
+  const handleSubmitQuestion = async () => {
+    if (!answers[currentQuestion]?.trim()) {
+      alert("Please enter an answer before moving on.");
+      return;
+    }
+
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      return;
+    }
+
+    await saveInterview();
   };
 
   return (
@@ -78,25 +98,38 @@ export default function Interview() {
 
       <section className="section">
         <div className="card enhanced-card">
-          {questions.map((question, index) => (
-            <div key={index} style={{ marginBottom: "24px" }}>
-              <h3 style={{ marginBottom: "10px", color: "#1c5c91" }}>
-                Question {index + 1}
-              </h3>
-              <p style={{ marginBottom: "10px", color: "#4f6f8f" }}>{question}</p>
-              <textarea
-                className="auth-input"
-                rows="4"
-                placeholder="Write your answer here"
-                value={answers[index]}
-                onChange={(e) => handleChange(index, e.target.value)}
-              />
-            </div>
-          ))}
+          <div style={{ marginBottom: "20px" }}>
+            <h3 style={{ marginBottom: "10px", color: "#1c5c91" }}>
+              Question {currentQuestion + 1} of {questions.length}
+            </h3>
+            <p style={{ marginBottom: "10px", color: "#4f6f8f" }}>
+              {questions[currentQuestion]}
+            </p>
+            <textarea
+              className="auth-input"
+              rows="6"
+              placeholder="Write your answer here"
+              value={answers[currentQuestion]}
+              onChange={(e) => handleChange(e.target.value)}
+            />
+          </div>
 
-          <button className="btn" onClick={handleSubmit}>
-            Submit Interview
-          </button>
+          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+            <button className="btn" onClick={handleSubmitQuestion} disabled={isSaving}>
+              {currentQuestion < questions.length - 1 ? "Submit Answer" : "Finish Interview"}
+            </button>
+            <button
+              className="btn btn-outline"
+              onClick={() => setCurrentQuestion(Math.max(currentQuestion - 1, 0))}
+              disabled={currentQuestion === 0 || isSaving}
+            >
+              Previous
+            </button>
+          </div>
+
+          <div style={{ marginTop: "18px", color: "#6b7d91" }}>
+            {answers.filter((answer) => answer.trim()).length} / {questions.length} answered
+          </div>
         </div>
 
         {submitted && (

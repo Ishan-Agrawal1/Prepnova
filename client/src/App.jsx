@@ -17,10 +17,13 @@ import Roadmap from "./pages/Roadmap";
 import Records from "./pages/Records";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import AnimatedBackground from "./components/AnimatedBackground";
 
 export default function App() {
   return (
-    <Routes>
+    <>
+      <AnimatedBackground />
+      <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
@@ -133,5 +136,6 @@ export default function App() {
         }
       />
     </Routes>
+    </>
   );
 }

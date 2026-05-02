@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function Navbar() {
   const links = [
@@ -20,24 +21,45 @@ export default function Navbar() {
   ];
 
   return (
-    <aside className="sidebar">
+    <motion.aside 
+      className="sidebar"
+      initial={{ x: -270 }}
+      animate={{ x: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+    >
       <div className="sidebar-inner">
-        <div className="logo">Interlyzer AI</div>
+        <motion.div 
+          className="logo"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+        >
+          Interlyzer AI
+        </motion.div>
 
-        <nav className="nav-links">
+        <motion.nav 
+          className="nav-links"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.6 } }
+          }}
+        >
           {links.map((link) => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              className={({ isActive }) =>
-                isActive ? "nav-link active" : "nav-link"
-              }
-            >
-              {link.label}
-            </NavLink>
+            <motion.div key={link.to} variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
+              <NavLink
+                to={link.to}
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+              >
+                {link.label}
+              </NavLink>
+            </motion.div>
           ))}
-        </nav>
+        </motion.nav>
       </div>
-    </aside>
+    </motion.aside>
   );
 }
