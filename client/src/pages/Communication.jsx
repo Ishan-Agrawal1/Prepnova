@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Navbar from "../components/navbar";
 import { motion } from "framer-motion";
 import { showToast } from "../components/Toast";
+import { shuffleArray, getRandomItems } from "../lib/questionUtils";
 
 const communicationQuestions = [
   "Tell me about a technical challenge you solved.",
@@ -315,6 +316,7 @@ export default function Communication() {
   const [selectedCompany, setSelectedCompany] = useState(companyOptions.tech[0]);
   const [selectedDomain, setSelectedDomain] = useState(companyDomains.tech[0]);
   const [sessionStarted, setSessionStarted] = useState(false);
+  const [sessionQuestionObjects, setSessionQuestionObjects] = useState([]);
   const [cameraActive, setCameraActive] = useState(false);
   const [cameraWarning, setCameraWarning] = useState("");
   const [cameraStatus, setCameraStatus] = useState("Camera inactive");
@@ -339,8 +341,12 @@ export default function Communication() {
   const currentCompanyList = companyOptions[companyType];
   const currentDomains = companyDomains[companyType];
   const activeCompanyQuestions = companyQuestionBank[selectedDomain] || [];
-  const activeQuestions = practiceMode === "Company Aptitude" ? activeCompanyQuestions.map((item) => item.question) : communicationQuestions;
-  const activeModelAnswers = practiceMode === "Company Aptitude" ? activeCompanyQuestions.map((item) => item.model) : communicationModelAnswers;
+  const activeQuestions = sessionStarted && sessionQuestionObjects.length > 0
+    ? sessionQuestionObjects.map((item) => item.question)
+    : (practiceMode === "Company Aptitude" ? activeCompanyQuestions.map((item) => item.question) : communicationQuestions);
+  const activeModelAnswers = sessionStarted && sessionQuestionObjects.length > 0
+    ? sessionQuestionObjects.map((item) => item.model)
+    : (practiceMode === "Company Aptitude" ? activeCompanyQuestions.map((item) => item.model) : communicationModelAnswers);
   const activeAnswers = practiceMode === "Company Aptitude" ? companyAnswers : answers;
   const setActiveAnswers = practiceMode === "Company Aptitude" ? setCompanyAnswers : setAnswers;
 
@@ -359,6 +365,7 @@ export default function Communication() {
     if (!currentDomains.includes(selectedDomain)) {
       setSelectedDomain(currentDomains[0]);
     }
+    setSessionQuestionObjects([]);
     resetSession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyType]);
@@ -369,6 +376,7 @@ export default function Communication() {
     } else {
       setAnswers(Array(activeQuestions.length).fill(""));
     }
+    setSessionQuestionObjects([]);
     resetSession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [practiceMode, selectedDomain]);
@@ -378,22 +386,38 @@ export default function Communication() {
     setCurrentQuestion(0);
     setCurrentText("");
     setCurrentTranscript("");
+    setAnswers([]);
+    setCompanyAnswers([]);
     setSubmitted(false);
     setFeedback("");
     setFeedbackDetails([]);
     setReviewComparison(null);
   };
 
-  const initializeAnswers = () => {
+  const configureSessionQuestions = () => {
     if (practiceMode === "Company Aptitude") {
-      setCompanyAnswers(Array(activeQuestions.length).fill(""));
+      setSessionQuestionObjects(getRandomItems(activeCompanyQuestions, Math.min(4, activeCompanyQuestions.length)));
     } else {
-      setAnswers(Array(activeQuestions.length).fill(""));
+      const questionPairs = communicationQuestions.map((question, index) => ({
+        question,
+        model: communicationModelAnswers[index] || "",
+      }));
+      setSessionQuestionObjects(shuffleArray(questionPairs).slice(0, Math.min(5, questionPairs.length)));
     }
   };
 
+  useEffect(() => {
+    if (!sessionStarted || sessionQuestionObjects.length === 0) return;
+    if (practiceMode === "Company Aptitude") {
+      setCompanyAnswers(Array(sessionQuestionObjects.length).fill(""));
+    } else {
+      setAnswers(Array(sessionQuestionObjects.length).fill(""));
+    }
+    setCurrentQuestion(0);
+  }, [sessionStarted, sessionQuestionObjects, practiceMode]);
+
   const startSession = () => {
-    initializeAnswers();
+    configureSessionQuestions();
     setSessionStarted(true);
     setCurrentQuestion(0);
     setCurrentText("");
@@ -489,7 +513,9 @@ export default function Communication() {
   const getAnswerAnalysis = (answer, index) => {
     const sample = answer.trim();
     const lower = sample.toLowerCase();
-    const questionObject = practiceMode === "Company Aptitude" ? activeCompanyQuestions[index] : null;
+    const questionObject = practiceMode === "Company Aptitude"
+      ? (sessionStarted && sessionQuestionObjects.length > 0 ? sessionQuestionObjects[index] : activeCompanyQuestions[index])
+      : null;
     const expectedKeywords = questionObject?.keywords || [
       ["challenge", "problem", "solution", "impact", "test"],
       ["simple", "analogy", "example", "benefit", "audience"],

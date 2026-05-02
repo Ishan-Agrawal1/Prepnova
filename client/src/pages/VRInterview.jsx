@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Navbar from "../components/navbar";
 import { showToast } from "../components/Toast";
+import { shuffleArray } from "../lib/questionUtils";
 import * as BABYLON from "@babylonjs/core";
 import "@babylonjs/loaders";
 import { motion } from "framer-motion";
+
+const AVATAR_IMAGE_URL = "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=512&q=80";
 
 const interviewQuestions = [
   "Tell me about your background and experience.",
@@ -56,100 +59,26 @@ const createInterviewRoom = (scene) => {
 };
 
 const createInterviewerAvatar = (scene) => {
-  const head = BABYLON.MeshBuilder.CreateSphere("head", { diameter: 0.64, segments: 32 }, scene);
-  head.position = new BABYLON.Vector3(0, 1.64, 2);
-  head.material = new BABYLON.StandardMaterial("headMat", scene);
-  head.material.diffuse = new BABYLON.Color3(0.6, 0.55, 0.48);
+  const avatarPlane = BABYLON.MeshBuilder.CreatePlane("avatarPlane", { width: 1.4, height: 1.8 }, scene);
+  avatarPlane.position = new BABYLON.Vector3(0, 1.05, 2);
 
-  const hair = BABYLON.MeshBuilder.CreateSphere("hair", { diameter: 0.72, segments: 24 }, scene);
-  hair.position = new BABYLON.Vector3(0, 1.82, 2);
-  hair.scaling = new BABYLON.Vector3(1, 0.5, 1);
-  hair.material = new BABYLON.StandardMaterial("hairMat", scene);
-  hair.material.diffuse = new BABYLON.Color3(0.04, 0.03, 0.025);
-
-  const neck = BABYLON.MeshBuilder.CreateCylinder("neck", { diameter: 0.22, height: 0.22, tessellation: 16 }, scene);
-  neck.position = new BABYLON.Vector3(0, 1.4, 2);
-  neck.material = new BABYLON.StandardMaterial("neckMat", scene);
-  neck.material.diffuse = new BABYLON.Color3(0.6, 0.55, 0.48);
-
-  const torso = BABYLON.MeshBuilder.CreateBox("torso", { width: 0.92, height: 1.04, depth: 0.5 }, scene);
-  torso.position = new BABYLON.Vector3(0, 0.74, 2);
-  torso.material = new BABYLON.StandardMaterial("torsoMat", scene);
-  torso.material.diffuse = new BABYLON.Color3(0.08, 0.2, 0.36);
-
-  const shoulders = BABYLON.MeshBuilder.CreateBox("shoulders", { width: 1.08, height: 0.2, depth: 0.52 }, scene);
-  shoulders.position = new BABYLON.Vector3(0, 1.05, 2);
-  shoulders.material = torso.material;
-
-  const leftArm = BABYLON.MeshBuilder.CreateCylinder("leftArm", { diameter: 0.16, height: 0.9, tessellation: 16 }, scene);
-  leftArm.position = new BABYLON.Vector3(-0.55, 0.95, 2);
-  leftArm.rotation.z = Math.PI / 4.8;
-  leftArm.material = neck.material;
-
-  const rightArm = BABYLON.MeshBuilder.CreateCylinder("rightArm", { diameter: 0.16, height: 0.9, tessellation: 16 }, scene);
-  rightArm.position = new BABYLON.Vector3(0.55, 0.95, 2);
-  rightArm.rotation.z = -Math.PI / 4.8;
-  rightArm.material = neck.material;
-
-  const leftLeg = BABYLON.MeshBuilder.CreateCylinder("leftLeg", { diameter: 0.16, height: 0.86, tessellation: 16 }, scene);
-  leftLeg.position = new BABYLON.Vector3(-0.18, -0.18, 2);
-  leftLeg.material = new BABYLON.StandardMaterial("legMat", scene);
-  leftLeg.material.diffuse = new BABYLON.Color3(0.07, 0.07, 0.07);
-
-  const rightLeg = BABYLON.MeshBuilder.CreateCylinder("rightLeg", { diameter: 0.16, height: 0.86, tessellation: 16 }, scene);
-  rightLeg.position = new BABYLON.Vector3(0.18, -0.18, 2);
-  rightLeg.material = leftLeg.material;
-
-  const leftEye = BABYLON.MeshBuilder.CreateSphere("leftEye", { diameter: 0.1, segments: 16 }, scene);
-  leftEye.position = new BABYLON.Vector3(-0.12, 1.72, 2.28);
-  leftEye.material = new BABYLON.StandardMaterial("eyeMat", scene);
-  leftEye.material.diffuse = new BABYLON.Color3(0.9, 0.9, 0.9);
-
-  const rightEye = BABYLON.MeshBuilder.CreateSphere("rightEye", { diameter: 0.1, segments: 16 }, scene);
-  rightEye.position = new BABYLON.Vector3(0.12, 1.72, 2.28);
-  rightEye.material = leftEye.material;
-
-  const leftPupil = BABYLON.MeshBuilder.CreateSphere("leftPupil", { diameter: 0.04, segments: 12 }, scene);
-  leftPupil.position = new BABYLON.Vector3(-0.12, 1.72, 2.33);
-  leftPupil.material = new BABYLON.StandardMaterial("pupilMat", scene);
-  leftPupil.material.diffuse = new BABYLON.Color3(0.02, 0.02, 0.02);
-
-  const rightPupil = leftPupil.createInstance("rightPupil");
-  rightPupil.position = new BABYLON.Vector3(0.12, 1.72, 2.33);
-
-  const mouth = BABYLON.MeshBuilder.CreateTube(
-    "mouth",
-    {
-      path: [
-        new BABYLON.Vector3(-0.11, 1.54, 2.28),
-        new BABYLON.Vector3(0, 1.52, 2.28),
-        new BABYLON.Vector3(0.11, 1.54, 2.28),
-      ],
-      radius: 0.02,
-      updatable: false,
-    },
-    scene
+  const avatarMat = new BABYLON.StandardMaterial("avatarPlaneMat", scene);
+  avatarMat.diffuseTexture = new BABYLON.Texture(
+    AVATAR_IMAGE_URL,
+    scene,
+    false,
+    true,
+    BABYLON.Texture.TRILINEAR_SAMPLINGMODE,
+    () => {},
+    (message, exception) => {
+      console.warn("Avatar image failed to load:", message, exception);
+    }
   );
-  mouth.material = new BABYLON.StandardMaterial("mouthMat", scene);
-  mouth.material.diffuse = new BABYLON.Color3(0.5, 0.22, 0.22);
+  avatarMat.specularColor = new BABYLON.Color3(0, 0, 0);
+  avatarMat.emissiveColor = new BABYLON.Color3(1, 1, 1);
+  avatarPlane.material = avatarMat;
 
-  const avatar = BABYLON.MeshBuilder.CreateBox("avatar", { size: 0 }, scene);
-  avatar.addChild(head);
-  avatar.addChild(hair);
-  avatar.addChild(neck);
-  avatar.addChild(torso);
-  avatar.addChild(shoulders);
-  avatar.addChild(leftArm);
-  avatar.addChild(rightArm);
-  avatar.addChild(leftLeg);
-  avatar.addChild(rightLeg);
-  avatar.addChild(leftEye);
-  avatar.addChild(rightEye);
-  avatar.addChild(leftPupil);
-  avatar.addChild(rightPupil);
-  avatar.addChild(mouth);
-
-  return { avatar, head, leftEye, rightEye, mouth, torso, leftArm, rightArm };
+  return { avatar: avatarPlane };
 };
 
 const animateAvatarSpeaking = (avatar, duration = 3) => {
@@ -158,14 +87,15 @@ const animateAvatarSpeaking = (avatar, duration = 3) => {
     const elapsed = Date.now() - startTime;
     if (elapsed > duration * 1000) {
       clearInterval(animationInterval);
-      if (avatar.head) avatar.head.position.y = 1.64;
-      if (avatar.torso) avatar.torso.position.y = 0.74;
+      if (avatar.avatar) avatar.avatar.position.y = 1.05;
       return;
     }
 
-    const t = (elapsed / (duration * 1000)) * Math.PI * 4;
-    if (avatar.head) avatar.head.position.y = 1.64 + Math.sin(t) * 0.08;
-    if (avatar.torso) avatar.torso.position.y = 0.74 + Math.sin(t * 0.5) * 0.03;
+    const t = (elapsed / (duration * 1000)) * Math.PI * 2;
+    if (avatar.avatar) {
+      avatar.avatar.position.y = 1.05 + Math.sin(t) * 0.04;
+      avatar.avatar.rotation.y = Math.sin(t * 0.3) * 0.04;
+    }
   }, 16);
 };
 
@@ -180,6 +110,7 @@ export default function VRInterview() {
   const detectionIntervalRef = useRef(null);
 
   const [vrSupported, setVrSupported] = useState(false);
+  const [randomQuestions, setRandomQuestions] = useState(() => shuffleArray(interviewQuestions));
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [faceDetected, setFaceDetected] = useState(false);
@@ -203,11 +134,11 @@ export default function VRInterview() {
 
     // Create scene
     createInterviewRoom(scene);
-    const { avatar, head, leftEye, rightEye, mouth, torso, leftArm, rightArm } = createInterviewerAvatar(scene);
+    const { avatar } = createInterviewerAvatar(scene);
 
     engineRef.current = engine;
     sceneRef.current = scene;
-    avatarRef.current = { avatar, head, leftEye, rightEye, mouth, torso, leftArm, rightArm };
+    avatarRef.current = { avatar };
     cameraRef.current = camera;
 
     // Check VR support
@@ -242,9 +173,15 @@ export default function VRInterview() {
   const speakQuestion = useCallback(() => {
     if (!("speechSynthesis" in window)) return;
 
-    const utterance = new SpeechSynthesisUtterance(interviewQuestions[currentQuestion]);
+    const voices = window.speechSynthesis.getVoices();
+    const preferredVoice = voices.find((voice) => /google|samantha|alex|en-us/i.test(voice.name)) || voices[0];
+    const utterance = new SpeechSynthesisUtterance(randomQuestions[currentQuestion]);
     utterance.lang = "en-US";
-    utterance.rate = 1;
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+    utterance.volume = 0.95;
+    if (preferredVoice) utterance.voice = preferredVoice;
+
     utterance.onstart = () => {
       setIsSpeaking(true);
       if (avatarRef.current) {
@@ -257,7 +194,7 @@ export default function VRInterview() {
 
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utterance);
-  }, [currentQuestion]);
+  }, [currentQuestion, randomQuestions]);
 
   useEffect(() => {
     if (sessionStarted) {
@@ -383,7 +320,7 @@ export default function VRInterview() {
   }, [sessionStarted]);
 
   const nextQuestion = () => {
-    if (currentQuestion < interviewQuestions.length - 1) {
+    if (currentQuestion < randomQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setTimeout(() => speakQuestion(), 500);
     }
@@ -408,7 +345,11 @@ export default function VRInterview() {
             <h1 className="section-title">VR Interview Experience</h1>
             <p className="section-subtitle">Experience a fully immersive virtual interview with an AI interviewer.</p>
             <div className="hero-actions">
-              <button className="btn" onClick={() => setSessionStarted(true)}>
+              <button className="btn" onClick={() => {
+                setRandomQuestions(shuffleArray(interviewQuestions));
+                setCurrentQuestion(0);
+                setSessionStarted(true);
+              }}>
                 Start Interview
               </button>
             </div>
@@ -430,7 +371,7 @@ export default function VRInterview() {
 
           <div className="vr-controls">
             <div className="vr-status">
-              <p>Question: {currentQuestion + 1} / {interviewQuestions.length}</p>
+              <p>Question: {currentQuestion + 1} / {randomQuestions.length}</p>
               <p>Face Detected: {faceDetected ? "✓ Yes" : "✗ No"}</p>
               <p>Eye Contact: {eyeContact}%</p>
               <p>Camera: {cameraActive ? "Active" : "Waiting for access"}</p>
@@ -444,7 +385,7 @@ export default function VRInterview() {
               <button onClick={repeatQuestion} disabled={isSpeaking}>
                 Repeat Question
               </button>
-              <button onClick={nextQuestion} disabled={currentQuestion === interviewQuestions.length - 1}>
+              <button onClick={nextQuestion} disabled={currentQuestion === randomQuestions.length - 1}>
                 Next Question
               </button>
               {vrSupported && (
@@ -456,7 +397,7 @@ export default function VRInterview() {
 
             <div className="vr-question-display">
               <h3>Current Question:</h3>
-              <p>{interviewQuestions[currentQuestion]}</p>
+              <p>{randomQuestions[currentQuestion]}</p>
             </div>
           </div>
         </div>

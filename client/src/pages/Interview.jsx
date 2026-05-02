@@ -1,27 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/navbar";
 import { showToast } from "../components/Toast";
 import { useSession } from "../lib/auth-client";
+import { shuffleArray } from "../lib/questionUtils";
+
+const interviewQuestionBank = [
+  "Tell me about yourself.",
+  "What are your strengths?",
+  "Why do you want this role?",
+  "Describe one project you built.",
+  "How do you handle pressure?",
+  "Tell me about a time you solved a difficult problem.",
+  "Why should we hire you?",
+  "Describe how you manage deadlines.",
+  "What motivates you at work?",
+  "How do you stay organized during a busy week?",
+];
 
 export default function Interview() {
   const { data: session } = useSession();
   const user = session?.user || JSON.parse(localStorage.getItem("studentUser") || "{}");
-  const questions = [
-    "Tell me about yourself.",
-    "What are your strengths?",
-    "Why do you want this role?",
-    "Describe one project you built.",
-    "How do you handle pressure?",
-  ];
-
-  const navigate = useNavigate();
+  const [questions, setQuestions] = useState(() => shuffleArray(interviewQuestionBank).slice(0, 5));
   const [answers, setAnswers] = useState(Array(questions.length).fill(""));
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    setAnswers(Array(questions.length).fill(""));
+    setCurrentQuestion(0);
+  }, [questions]);
+
+  const resetQuestions = () => {
+    setQuestions(shuffleArray(interviewQuestionBank).slice(0, 5));
+    setSubmitted(false);
+    setFeedback("");
+  };
 
   const handleChange = (value) => {
     const updated = [...answers];
@@ -89,7 +106,7 @@ export default function Interview() {
             receive coaching feedback to improve your structure and confidence.
           </p>
           <div className="hero-actions">
-            <button className="btn">Start Practice</button>
+            <button className="btn" onClick={resetQuestions}>New Random Questions</button>
             <button className="btn btn-outline">View Example Answers</button>
             <button className="btn btn-secondary" onClick={() => navigate("/vr-interview")}>VR Interview Mode</button>
           </div>

@@ -3,26 +3,54 @@ import axios from "axios";
 import Navbar from "../components/navbar";
 import { showToast } from "../components/Toast";
 import { useSession } from "../lib/auth-client";
+import { getRandomItems } from "../lib/questionUtils";
+
+const aptitudeQuestionBank = [
+  {
+    question: "What is 25% of 200?",
+    options: ["25", "50", "75", "100"],
+    answer: "50",
+  },
+  {
+    question: "If a train travels 60 km in 1 hour, how far in 3 hours?",
+    options: ["120 km", "180 km", "240 km", "300 km"],
+    answer: "180 km",
+  },
+  {
+    question: "What is 15 + 26?",
+    options: ["31", "41", "51", "61"],
+    answer: "41",
+  },
+  {
+    question: "A laptop costs $800. After a 10% discount, what is the price?",
+    options: ["$720", "$740", "$760", "$780"],
+    answer: "$720",
+  },
+  {
+    question: "What is the next number in the sequence: 2, 4, 8, 16, ?",
+    options: ["18", "20", "24", "32"],
+    answer: "32",
+  },
+  {
+    question: "If 3 pens cost $9, how much do 7 pens cost?",
+    options: ["$18", "$21", "$24", "$27"],
+    answer: "$21",
+  },
+];
 
 export default function Aptitude() {
   const { data: session } = useSession();
   const user = session?.user || JSON.parse(localStorage.getItem("studentUser") || "{}");
-  const questions = [
-    {
-      question: "What is 25% of 200?",
-      options: ["25", "50", "75", "100"],
-      answer: "50",
-    },
-    {
-      question: "If a train travels 60 km in 1 hour, how far in 3 hours?",
-      options: ["120 km", "180 km", "240 km", "300 km"],
-      answer: "180 km",
-    },
-  ];
-
+  const [questions, setQuestions] = useState(() => getRandomItems(aptitudeQuestionBank, 2));
   const [selected, setSelected] = useState({});
   const [score, setScore] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const resetQuiz = () => {
+    setQuestions(getRandomItems(aptitudeQuestionBank, 2));
+    setSelected({});
+    setScore(null);
+  };
 
   const submitTest = async () => {
     const answeredCount = Object.keys(selected).length;
@@ -70,7 +98,7 @@ export default function Aptitude() {
             speed building.
           </p>
           <div className="hero-actions">
-            <button className="btn">Take Quick Quiz</button>
+            <button className="btn" onClick={resetQuiz}>Take Quick Quiz</button>
             <button className="btn btn-outline">Review Concepts</button>
           </div>
         </div>
