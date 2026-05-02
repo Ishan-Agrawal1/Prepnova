@@ -30,7 +30,7 @@ export default function CodingTest() {
         question,
         code,
         feedback,
-      });
+      }, { withCredentials: true });
       setResult(feedback);
       showToast("Code submitted and reviewed!", "success");
     } catch (error) {

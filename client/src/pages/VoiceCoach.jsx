@@ -166,7 +166,7 @@ export default function VoiceCoach() {
         feedback: generated.text,
         score: generated.score,
         mode: "voice",
-      });
+      }, { withCredentials: true });
 
       setFeedback(`Score: ${generated.score}/100. ${generated.text}`);
       setSubmitted(true);

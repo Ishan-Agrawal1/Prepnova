@@ -47,7 +47,7 @@ export default function Interview() {
         questions,
         answers,
         feedback: generatedFeedback,
-      });
+      }, { withCredentials: true });
 
       setFeedback(generatedFeedback);
       setSubmitted(true);

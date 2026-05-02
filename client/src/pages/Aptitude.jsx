@@ -44,7 +44,7 @@ export default function Aptitude() {
         userEmail: user?.email || "guest@example.com",
         score: totalScore,
         total: questions.length,
-      });
+      }, { withCredentials: true });
       setScore(totalScore);
       showToast(`Test completed! You scored ${totalScore}/${questions.length}`, "success");
     } catch (error) {
