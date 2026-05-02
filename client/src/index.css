@@ -6,7 +6,9 @@
   box-sizing: border-box;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   width: 100%;
   min-height: 100%;
   font-family: 'Manrope', 'Inter', system-ui, sans-serif;
@@ -326,6 +328,7 @@ html, body, #root {
   background: rgba(5, 8, 20, 0.88);
   backdrop-filter: blur(18px);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Outfit', sans-serif;
 }
 
 .sidebar-inner {
@@ -740,9 +743,19 @@ html, body, #root {
 }
 
 @keyframes bounceIn {
-  0% { transform: scale(0.3); opacity: 0; }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .auth-loading-spinner {
@@ -755,7 +768,9 @@ html, body, #root {
 }
 
 @keyframes authSpin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ================= PROFILE ================= */
@@ -1318,6 +1333,7 @@ html, body, #root {
     opacity: 0;
     transform: translateX(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
