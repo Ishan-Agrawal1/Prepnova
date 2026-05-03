@@ -82,7 +82,7 @@ export const auth = betterAuth({
   trustedOrigins: [
     "http://localhost:5173",
     "http://localhost:3001",
-    "https://prepnova-zeta.vercel.app/",
-    "https://prepnova.onrender.com"
+    "https://prepnova-zeta.vercel.app",
+    "https://prepnova.onrender.com",
   ],
 });
