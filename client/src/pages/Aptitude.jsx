@@ -68,7 +68,8 @@ export default function Aptitude() {
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:3001/api/aptitude", {
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+      await axios.post(`${API_URL}/api/aptitude`, {
         userEmail: user?.email || "guest@example.com",
         score: totalScore,
         total: questions.length,

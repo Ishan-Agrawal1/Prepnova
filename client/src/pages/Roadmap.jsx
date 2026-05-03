@@ -38,10 +38,11 @@ export default function Roadmap() {
 
     const fetchRecords = async () => {
       try {
+        const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
         const [aptRes, codingRes, resumeRes] = await Promise.all([
-          axios.get(`http://localhost:3001/api/aptitude/${email}`),
-          axios.get(`http://localhost:3001/api/coding/${email}`),
-          axios.get(`http://localhost:3001/analyses/${email}`),
+          axios.get(`${API_URL}/api/aptitude/${email}`),
+          axios.get(`${API_URL}/api/coding/${email}`),
+          axios.get(`${API_URL}/analyses/${email}`),
         ]);
 
         setAptitudeRecords(aptRes.data || []);

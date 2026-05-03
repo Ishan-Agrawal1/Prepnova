@@ -72,13 +72,14 @@ export default function Login() {
 
   const handleGoogleLogin = async () => {
     try {
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
       await authClient.signIn.social({
         provider: "google",
-        // Absolute URL: relative paths resolve against API base (3001), not the Vite app
         callbackURL: `${window.location.origin}/dashboard`,
       });
     } catch (error) {
       showToast("Google login failed. Please try again.", "error");
+      console.error(error);
     }
   };
 

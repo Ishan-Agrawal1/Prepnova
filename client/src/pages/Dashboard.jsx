@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useSession } from "../lib/auth-client";
 import Navbar from "../components/navbar";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
 export default function Dashboard() {
-  const { data: session } = useSession();
+  const { data: session, isPending } = useSession();
   const [analyses, setAnalyses] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -14,7 +16,9 @@ export default function Dashboard() {
       const userEmail = user.email || "guest@example.com";
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:3001/analyses?email=${encodeURIComponent(userEmail)}`);
+        const res = await fetch(`${API_URL}/analyses?email=${encodeURIComponent(userEmail)}`, {
+          credentials: "include",
+        });
         const data = await res.json();
         if (data.success) setAnalyses(data.data || []);
       } catch (err) {

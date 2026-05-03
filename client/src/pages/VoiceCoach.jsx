@@ -158,8 +158,9 @@ export default function VoiceCoach() {
 
     try {
       setSaving(true);
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
-      await axios.post("http://localhost:3001/api/interviews", {
+      await axios.post(`${API_URL}/api/interviews`, {
         userEmail: user?.email || "guest@example.com",
         questions,
         answers,
