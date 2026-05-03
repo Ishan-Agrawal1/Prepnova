@@ -3,6 +3,15 @@ import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { MongoClient } from "mongodb";
 import nodemailer from "nodemailer";
 
+// Validate required environment variables
+if (!process.env.BETTER_AUTH_SECRET) {
+  console.warn("⚠️ WARNING: BETTER_AUTH_SECRET is not set! OAuth will fail.");
+}
+
+if (!process.env.MONGODB_URI) {
+  console.warn("⚠️ WARNING: MONGODB_URI is not set! Database connection will fail.");
+}
+
 // ─── MongoDB Client (raw driver, separate from Mongoose) ───
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
 const db = mongoClient.db(); // uses the DB name from the connection string
