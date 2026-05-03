@@ -22,8 +22,10 @@ const PORT = process.env.PORT || 3001;
 const allowedOrigins = [
   "http://localhost:5173", // Local development
   "http://localhost:3000", // Alternative local port
-  process.env.FRONTEND_URL || "https://prepnova.onrender.com", // Production
-];
+  "https://prepnova-zeta.vercel.app", // Vercel frontend
+  process.env.FRONTEND_URL, // Dynamic frontend URL
+  "https://prepnova.onrender.com", // Render backend (for same-origin)
+].filter(Boolean);
 
 app.use(
   cors({

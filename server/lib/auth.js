@@ -93,7 +93,8 @@ export const auth = betterAuth({
     "http://localhost:3001",
     "https://prepnova-zeta.vercel.app",
     "https://prepnova.onrender.com",
-  ],
+    process.env.FRONTEND_URL,
+  ].filter(Boolean),
 
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
@@ -101,15 +102,15 @@ export const auth = betterAuth({
     absoluteTimeout: 60 * 60 * 24 * 30, // 30 days absolute
   },
 
-  cookies: {
-    sessionToken: {
-      name: "better-auth.session_token",
-      attributes: {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 60 * 24 * 7,
-      },
+  advanced: {
+    crossSubDomainCookies: {
+      enabled: false,
+    },
+    defaultCookieAttributes: {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+      path: "/",
     },
   },
 });
