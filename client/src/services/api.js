@@ -1,8 +1,10 @@
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
 export async function uploadResume(file) {
   const formData = new FormData();
   formData.append("resume", file);
 
-  const response = await fetch("https://prepnova.onrender.com/upload", {
+  const response = await fetch(`${API_URL}/upload`, {
     method: "POST",
     body: formData,
   });
@@ -17,7 +19,7 @@ export async function uploadResume(file) {
 }
 
 export async function getAnalyses() {
-  const response = await fetch("https://prepnova.onrender.com/analyses");
+  const response = await fetch(`${API_URL}/analyses`);
   const data = await response.json();
 
   if (!response.ok || data.success === false) {
