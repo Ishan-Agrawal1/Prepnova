@@ -220,7 +220,7 @@ export default function VoiceCoach() {
 
           <div className="voice-navigation">
             <button
-              className="btn-outline"
+              className="btn-outline btn-prev"
               onClick={previousQuestion}
               disabled={currentQuestion === 0}
             >
@@ -228,7 +228,7 @@ export default function VoiceCoach() {
             </button>
 
             <button
-              className="btn-outline"
+              className="btn-outline btn-next"
               onClick={nextQuestion}
               disabled={currentQuestion === questions.length - 1}
             >
