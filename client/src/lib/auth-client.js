@@ -4,6 +4,9 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 export const authClient = createAuthClient({
   baseURL: API_URL,
+  fetchOptions: {
+    credentials: "include", // Always send credentials (cookies)
+  },
 });
 
 // Export commonly used hooks and methods
