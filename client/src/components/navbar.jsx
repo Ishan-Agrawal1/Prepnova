@@ -77,6 +77,18 @@ export default function Navbar() {
               </motion.div>
 
               <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
+                <Link to="/digital-twin" className={`nav-link${activeLink("/digital-twin") ? " active" : ""}`}>
+                  <span className="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-80q-82 0-154.5-31.5T160-180l-80 40v-200l80-40q56-27 128-45t160-18q82 0 154.5 31.5T800-420l80 40v200l-80-40q-56 27-128 45T480-80Zm0-80q81 0 150-28t120-76l-120-60q-57 27-120 27t-120-27l-120 60q48 48 117 76t123 28Zm0-180q81 0 150-28t120-76l-120-60q-57 27-120 27t-120-27l-120 60q48 48 117 76t123 28Zm0-180q81 0 150-28t120-76l-120-60q-57 27-120 27t-120-27l-120 60q48 48 117 76t123 28ZM240-620l240-120 240 120-240 120-240-120Z"/></svg></span> Twin
+                </Link>
+              </motion.div>
+
+              <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
+                <Link to="/career-dna" className={`nav-link${activeLink("/career-dna") ? " active" : ""}`}>
+                  <span className="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e3e3e3" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v6"/><path d="M5 10h14"/><path d="M7 22h10"/><path d="M9 16h6"/></svg></span> Career DNA
+                </Link>
+              </motion.div>
+
+              <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
                 <Link to="/resume" className={`nav-link${activeLink("/resume") ? " active" : ""}`}>
                   <span className="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-800v241-1 400-640 200-200Zm0 720q-33 0-56.5-23.5T120-160v-640q0-33 23.5-56.5T200-880h320l240 240v100q-19-8-39-12.5t-41-6.5v-41H480v-200H200v640h241q16 24 36 44.5T521-80H200Zm531-149q29-29 29-71t-29-71q-29-29-71-29t-71 29q-29 29-29 71t29 71q29 29 71 29t71-29ZM864-40 756-148q-21 14-45.5 21t-50.5 7q-75 0-127.5-52.5T480-300q0-75 52.5-127.5T660-480q75 0 127.5 52.5T840-300q0 26-7 50.5T812-204L920-96l-56 56Z"/></svg></span> Resume
                 </Link>
@@ -129,6 +141,12 @@ export default function Navbar() {
               <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
                 <Link to="/records" className={`nav-link${activeLink("/records") ? " active" : ""}`}>
                   <span className="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-120q-151 0-255.5-46.5T120-280v-400q0-66 105.5-113T480-840q149 0 254.5 47T840-680v400q0 67-104.5 113.5T480-120Zm0-479q89 0 179-25.5T760-679q-11-29-100.5-55T480-760q-91 0-178.5 25.5T200-679q14 30 101.5 55T480-599Zm0 199q42 0 81-4t74.5-11.5q35.5-7.5 67-18.5t57.5-25v-120q-26 14-57.5 25t-67 18.5Q600-528 561-524t-81 4q-42 0-82-4t-75.5-11.5Q287-543 256-554t-56-25v120q25 14 56 25t66.5 18.5Q358-408 398-404t82 4Zm0 200q46 0 93.5-7t87.5-18.5q40-11.5 67-26t32-29.5v-98q-26 14-57.5 25t-67 18.5Q600-328 561-324t-81 4q-42 0-82-4t-75.5-11.5Q287-343 256-354t-56-25v99q5 15 31.5 29t66.5 25.5q40 11.5 88 18.5t94 7Z"/></svg></span> Records
+                </Link>
+              </motion.div>
+
+              <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}>
+                <Link to="/company-readiness" className={`nav-link${activeLink("/company-readiness") ? " active" : ""}`}>
+                  <span className="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M240-240h480v-80H240v80Zm0-160h480v-80H240v80Zm0-160h240v-80H240v80Zm0-160h480v-80H240v80Zm-80 640q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120H160Zm0-80h640v-560H160v560Zm0 0v-560 560Z"/></svg></span> Readiness
                 </Link>
               </motion.div>
 

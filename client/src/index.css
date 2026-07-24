@@ -1,4 +1,9 @@
+/* stylelint-disable at-rule-no-unknown */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 * {
   margin: 0;
@@ -53,20 +58,20 @@ body::before {
   color: #00f5ff;
 }
 
-/* NAV LINKS FIX */
-.nav-links {
+/* NAV LINKS FIX (header) */
+.navbar .nav-links {
   display: flex;
   gap: 28px;
 }
 
-.nav-links a {
+.navbar .nav-links a {
   color: #cbd5e1;
   font-weight: 600;
   text-decoration: none;
   transition: 0.3s;
 }
 
-.nav-links a:hover {
+.navbar .nav-links a:hover {
   color: #00f5ff;
 }
 
@@ -74,9 +79,9 @@ body::before {
 
 .hero {
   width: 100%;
-  max-width: 1140px;
-  margin: auto;
-  padding: 92px 24px 60px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 72px 24px 54px;
   text-align: center;
   position: relative;
 }
@@ -123,12 +128,8 @@ body::before {
   margin-right: 8px;
 }
 
-/* ================= BUTTONS ================= */
 
-.btn {
-  margin-top: 30px;
-  padding: 14px 28px;
-  border-radius: 16px;
+.hero-upload {
   border: none;
   background: linear-gradient(135deg, #14b8ff, #7c3aed);
   color: #ffffff;
@@ -176,9 +177,9 @@ body::before {
 /* ================= SECTION ================= */
 
 .section {
-  max-width: 1200px;
-  margin: auto;
-  padding: 60px 20px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 36px 20px 60px;
   margin-top: 0;
 }
 
@@ -413,9 +414,11 @@ body::before {
 .aptitude-page,
 .records-page {
   width: 100%;
-  max-width: 100%;
-  padding-left: 0 !important;
-  margin-left: 0 !important;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: 56px !important;
+  padding-right: 24px !important;
+  box-sizing: border-box;
 }
 
 /* ===== LEFT SIDEBAR ===== */
@@ -536,23 +539,7 @@ body::before {
   box-shadow: 0 0 18px rgba(0, 245, 255, 0.1);
 }
 
-.page-container,
-.tech-page,
-.home-page,
-.resume-page,
-.dashboard-page,
-.communication-page,
-.roadmap-page,
-.profile-page,
-.interview-page,
-.voice-page,
-.coding-page,
-.github-page,
-.vr-interview-page,
-.aptitude-page,
-.records-page {
-  padding-left: 270px !important;
-}
+/* Duplicate page-container padding removed (consolidated above) */
 
 /* Auth routes: full-width split, no sidebar offset */
 .page-container.tech-page.auth-page {
@@ -619,9 +606,9 @@ body::before {
 }
 
 .home-content {
-  margin-left: 270px;
-  width: calc(100% - 270px);
-  padding: 40px 24px;
+  margin-left: 280px;
+  width: calc(100% - 280px);
+  padding: 40px 56px;
   box-sizing: border-box;
 }
 

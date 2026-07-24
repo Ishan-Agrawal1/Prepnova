@@ -4,6 +4,8 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import ResumeAnalyzer from "./pages/ResumeAnalyser";
 import Dashboard from "./pages/Dashboard";
+import DigitalTwin from "./pages/DigitalTwin";
+import CareerDNA from "./pages/CareerDNA";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -17,6 +19,7 @@ import VRInterview from "./pages/VRInterview";
 import GithubReview from "./pages/GithubReview";
 import Roadmap from "./pages/Roadmap";
 import Records from "./pages/Records";
+import CompanyReadinessAnalyzer from "./pages/CompanyReadinessAnalyzer";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import AnimatedBackground from "./components/AnimatedBackground";
@@ -37,6 +40,24 @@ export default function App() {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/digital-twin"
+        element={
+          <ProtectedRoute>
+            <DigitalTwin />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/career-dna"
+        element={
+          <ProtectedRoute>
+            <CareerDNA />
           </ProtectedRoute>
         }
       />
@@ -136,6 +157,15 @@ export default function App() {
         element={
           <ProtectedRoute>
             <Records />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/company-readiness"
+        element={
+          <ProtectedRoute>
+            <CompanyReadinessAnalyzer />
           </ProtectedRoute>
         }
       />
